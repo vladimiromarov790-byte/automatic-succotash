@@ -1,0 +1,11 @@
+id = "player_clones"
+name = "Player Clones"
+version = "0.1.0"
+description = "Clones of you that follow, echo your movements and repeat your mining and building."
+authors = ["Claude"]
+api = "0.1"
+side = "client"
+# Verified against horizon.wit: `command` runs vanilla commands (the `world` interface there is server-mods only),
+# `input` is experimental and must also be listed under `experimental`.
+capabilities = ["game-read", "chat", "command", "input"]
+experimental = ["input"]

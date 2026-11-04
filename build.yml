@@ -1,0 +1,26 @@
+# Builds the .hmod in the cloud: no PC needed. Push to a GitHub repo, run "Actions > build > Run workflow",
+# download the artifact, import the .hmod in Horizon Android (Mods > direct HTTPS URL, or copy the file).
+name: build
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+    branches: ['**']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { targets: wasm32-unknown-unknown }
+      - run: cargo test --lib            # pure logic tests in src/logic.rs (no SDK needed to run them)
+      - run: cargo install --git https://github.com/horizon-rust/horizon cargo-horizon-mod
+      - run: cargo horizon-mod build
+      - run: cargo horizon-mod check target/horizon-mod/player_clones.hmod
+      - uses: actions/upload-artifact@v4
+        with: { name: player_clones, path: target/horizon-mod/player_clones.hmod }
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with: { files: target/horizon-mod/player_clones.hmod }
