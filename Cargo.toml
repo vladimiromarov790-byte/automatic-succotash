@@ -1,0 +1,16 @@
+[package]
+name = "player_clones"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# VERIFY: pin to the same commit as the user's Horizon build (see HANDOFF.md, step 2).
+horizon-mod-sdk = { git = "https://github.com/horizon-rust/horizon", package = "horizon-mod-sdk" }
+
+[profile.release]
+opt-level = "s"
+lto = true
